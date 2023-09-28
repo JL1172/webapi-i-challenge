@@ -1,6 +1,7 @@
 const express = require("express");
 const Data = require("../data/mockData");
 const UserData = require("../data/db.js")
+const EmailData = require("../data/emails.db")
 const server = express();
 
 server.use(express.json());
@@ -163,4 +164,49 @@ server.delete("/users/:id",async(req,res)=> {
         res.status(500).json({ message: "Error fetching users " + err.message })
     }
 })
+
+
+
+
+
+
+
+
+
+/////!//!//!//!//!//!//!//!//!//!/!//!//!//!//!//!//!//!//!//!//!/!//!//!//!//!//!//!//!//!//!//!/!//!//!//!//!//!//!//!//!//!//!/!//!//!//!//!//!//!//!//!//!//!////////////////////
+//* /* new api end points below*/ //*
+///////!//!//!//!//!//!//!//!//!/!//!//!//!//!//!//!//!//!//!//!/!//!//!//!//!//!//!//!//!//!//!/!//!//!//!//!//!//!//!//!//!//!/!//!//!//!//!//!//!//!//!//!//!/////////////////////
+
+server.get("/emails",async(req,res)=> {
+    try {
+        const emails = await EmailData.getEmails();
+        res.status(200).json({message : "success on email fetch", data : emails})
+    } catch (err) {
+        res.status(500).json({message : `error fetching emails ${err.message}`})
+    }
+})
+server.put("/emails/:id",async(req,res) => {
+    try {
+       const {id} = req.params;
+       const {email} = req.body;
+       const updatedEmail = await EmailData.modifyEmail(id,email);
+       if (!id) {
+        res.status(404).json({message : "need to input id to instantiate request"})
+       }
+       if (!email) {
+        res.status(422).json({message : "need email field to complete update"})
+       }
+       if (!updatedEmail) {
+        res.status(404).json({message : `email with id: ${id} not found`})
+       } else {
+        res.status(200).json({message : "success on update", data : updatedEmail})
+       }
+    } catch(err) {
+        res.status(500).json({message : `error fetching email ${err.message}`})
+    }
+})
+
+
+
 module.exports = server;
+

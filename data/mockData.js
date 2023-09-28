@@ -26,15 +26,8 @@ module.exports = {
     async updateHobbit(idToUpdate,updatedName) {
         const found = hobbits.find(n => n.id == idToUpdate);
         if (!found) return null; //*handler for no update, sends a message like "need to update or exist for valid update"
-        else {
-            return hobbits.map(n => {
-                if (n.id == idToUpdate) {
-                    return {...n, name : updatedName}
-                } else {
-                    return n;
-                }
-            })
-        }
+        hobs = hobbits.map(n=> (n.id == idToUpdate) ? {name : updatedName, id : +n.id} : n)
+        return hobs; 
     },
     async deleteHobbit(idToDelete) {
         const foundTest = hobbits.find(n=> n.id == idToDelete)
